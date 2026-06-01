@@ -95,7 +95,18 @@ function RootComponent() {
   console.log("DEBUG: RootComponent render, bgImage:", bgImage ? bgImage.slice(0, 50) + "..." : null);
 
   if (!isMounted) {
-    return null;
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-[#070b19] font-sans">
+        <div className="text-center">
+          <div className="relative h-12 w-12 mx-auto mb-4">
+            <div className="absolute inset-0 rounded-full border-4 border-blue-900" />
+            <div className="absolute inset-0 rounded-full border-4 border-blue-400 border-t-transparent animate-spin" />
+          </div>
+          <p className="text-sm font-bold tracking-widest text-blue-400 uppercase">AMS TRANSPORTS</p>
+          <p className="text-[10px] text-muted-foreground/60 tracking-wider uppercase mt-1.5 font-semibold">Establishing Secure Link...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
