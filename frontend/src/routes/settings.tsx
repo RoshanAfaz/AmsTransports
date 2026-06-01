@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { apiGet, apiPost } from "@/lib/api-fetch";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Trash2, Image } from "lucide-react";
 import { useLanguage, Language } from "@/lib/language-context";
@@ -60,7 +60,13 @@ function Settings() {
   const [gstin, setGstin] = useState(settings.gstin || "33ABCDE1234F1Z5");
   const [headOffice, setHeadOffice] = useState(settings.headOffice || "Chennai, TN");
   const [dieselPrice, setDieselPrice] = useState(settings.dieselPrice || 92.4);
-  const [bgInput, setBgInput] = useState(typeof window !== "undefined" ? (localStorage.getItem("ams_bg_image") || "") : "");
+  const [bgInput, setBgInput] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setBgInput(localStorage.getItem("ams_bg_image") || "");
+    }
+  }, []);
 
   function handleBgSave(url: string) {
     console.log("DEBUG: handleBgSave called with url:", url ? url.slice(0, 50) + "..." : null);
