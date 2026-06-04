@@ -7,8 +7,9 @@ import { StatusBar } from "@capacitor/status-bar";
 
 if (Capacitor.isNativePlatform()) {
   try {
-    StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
-    StatusBar.setBackgroundColor({ color: '#0d1326' }).catch(() => {});
+    document.documentElement.classList.add("native-platform");
+    StatusBar.setOverlaysWebView({ overlay: true }).catch(() => {});
+    StatusBar.setBackgroundColor({ color: '#00000000' }).catch(() => {});
   } catch (e) {
     console.warn("StatusBar plugin error:", e);
   }

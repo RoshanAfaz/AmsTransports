@@ -76,8 +76,8 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
-      <SidebarHeader className="border-b border-sidebar-border group-data-[state=collapsed]:p-2">
+    <Sidebar collapsible="offcanvas" className="border-r border-sidebar-border">
+      <SidebarHeader className="border-b border-sidebar-border group-data-[state=collapsed]:p-2 pt-[calc(0.5rem+env(safe-area-inset-top,0px))]">
         <div className="flex items-center gap-3 px-2 py-3 group-data-[state=collapsed]:px-0 group-data-[state=collapsed]:justify-center transition-all duration-200">
           <div className="flex h-10 w-10 group-data-[state=collapsed]:h-8 group-data-[state=collapsed]:w-8 shrink-0 items-center justify-center rounded-xl bg-white border border-white/10 shadow-sm transition-all duration-200">
             <Truck className="h-5 w-5 group-data-[state=collapsed]:h-4 group-data-[state=collapsed]:w-4 text-[#0a1120] transition-all duration-200" />
