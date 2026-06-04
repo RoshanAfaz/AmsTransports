@@ -2,6 +2,17 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "@tanstack/react-router";
 import { getRouter } from "./router";
+import { Capacitor } from "@capacitor/core";
+import { StatusBar } from "@capacitor/status-bar";
+
+if (Capacitor.isNativePlatform()) {
+  try {
+    StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {});
+    StatusBar.setBackgroundColor({ color: '#0d1326' }).catch(() => {});
+  } catch (e) {
+    console.warn("StatusBar plugin error:", e);
+  }
+}
 
 const router = getRouter();
 

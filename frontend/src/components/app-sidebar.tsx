@@ -65,10 +65,15 @@ const groups = [
 ];
 
 export function AppSidebar() {
-  const { state } = useSidebar();
+  const { state, setOpen, setOpenMobile } = useSidebar();
   const collapsed = state === "collapsed";
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { t } = useLanguage();
+
+  const handleLinkClick = () => {
+    setOpenMobile(false);
+    setOpen(false);
+  };
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
@@ -101,7 +106,7 @@ export function AppSidebar() {
                         isActive={active}
                         className={`group relative h-10 transition-colors ${active ? g.bgClass : ""}`}
                       >
-                        <Link to={item.url} className="flex items-center gap-3">
+                        <Link to={item.url} onClick={handleLinkClick} className="flex items-center gap-3">
                           {active && (
                             <span className={`absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full ${g.barColor} ${g.shadowColor} shadow-[0_0_8px_var(--tw-shadow-color)]`} />
                           )}
