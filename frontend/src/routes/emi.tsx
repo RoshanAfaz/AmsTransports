@@ -203,7 +203,7 @@ function Ring({ pct }: { pct: number }) {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {emis.map((e) => {
+          {emis.map((e: any) => {
             const pct = Math.min(100, Math.round((e.paid / e.tenure) * 100));
             const loanAmount = e.loanAmount || e.total || 0;
             const totalPayable = e.monthly * e.tenure;

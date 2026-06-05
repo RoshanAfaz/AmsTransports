@@ -35,7 +35,7 @@ function PL() {
     if (truckId === "custom") {
       return;
     }
-    const truck = trucks.find(t => t.id === truckId);
+    const truck = trucks.find((t: any) => t.id === truckId);
     if (truck) {
       setChassisCost(truck.chassisCost || truck.purchase || 0);
       setBodyCost(truck.bodyCost || 0);
@@ -51,8 +51,8 @@ function PL() {
   const best = sorted.length > 0 && sorted[0].revenue > 0 ? sorted[0] : null;
   const worst = sorted.length > 0 && sorted[sorted.length - 1].profit < 0 ? sorted[sorted.length - 1] : null;
   
-  const totalProfit = trucks.reduce((s, t) => s + t.profit, 0);
-  const totalLoss = trucks.filter(t => t.profit < 0).reduce((s, t) => s + t.profit, 0);
+  const totalProfit = trucks.reduce((s: number, t: any) => s + t.profit, 0);
+  const totalLoss = trucks.filter((t: any) => t.profit < 0).reduce((s: number, t: any) => s + t.profit, 0);
 
   return (
     <div>
@@ -73,7 +73,7 @@ function PL() {
               </SelectTrigger>
               <SelectContent className="bg-popover text-popover-foreground border border-border">
                 <SelectItem value="custom">Custom (Manual)</SelectItem>
-                {trucks.map(t => (
+                {trucks.map((t: any) => (
                   <SelectItem key={t.id} value={t.id}>{t.id}</SelectItem>
                 ))}
               </SelectContent>
@@ -196,8 +196,8 @@ function PL() {
           {sorted.length === 0 ? (
             <div className="text-center py-6 text-sm text-muted-foreground">No vehicles tracked yet. Add vehicles in the Fleet page to start.</div>
           ) : (
-            sorted.map((t) => {
-              const maxAbs = Math.max(...trucks.map(x => Math.abs(x.profit)), 1); 
+            sorted.map((t: any) => {
+              const maxAbs = Math.max(...trucks.map((x: any) => Math.abs(x.profit)), 1); 
               const pct = (Math.abs(t.profit) / maxAbs) * 100;
               
               return (
