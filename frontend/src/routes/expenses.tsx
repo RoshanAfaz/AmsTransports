@@ -125,7 +125,7 @@ function Expenses() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">General / No Truck</SelectItem>
-                {trucks.map(t => <SelectItem key={t.id} value={t.id}>{t.id}</SelectItem>)}
+                {trucks.map((t: any) => <SelectItem key={t.id} value={t.id}>{t.id}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -169,7 +169,7 @@ function Expenses() {
                 <YAxis stroke="var(--color-muted-foreground)" fontSize={11} tickFormatter={(v) => `₹${v}`} />
                 <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => formatINR(v)} />
                 <Bar dataKey="value" radius={[8, 8, 0, 0]}>
-                  {expenseBreakdown.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                  {expenseBreakdown.map((_: any, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -195,7 +195,7 @@ function Expenses() {
                 </tr>
               </thead>
               <tbody>
-                {expenses.map((e) => (
+                {expenses.map((e: any) => (
                   <tr key={e._id} className="border-b border-border/40 hover:bg-muted/40 group">
                     <td className="py-3 pr-4 text-muted-foreground">{e.date || "N/A"}</td>
                     <td className="py-3 pr-4"><Badge variant="outline" className="border-border bg-muted/40">{e.category}</Badge></td>

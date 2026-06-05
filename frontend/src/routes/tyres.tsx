@@ -82,7 +82,7 @@ function Tyres() {
   const [openAdd, setOpenAdd] = useState(false);
   const [posValue, setPosValue] = useState("");
 
-  const vehicleTyres = tyres.filter(t => t.truck === selectedTruck);
+  const vehicleTyres = tyres.filter((t: any) => t.truck === selectedTruck);
 
   async function onAddTyre(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -119,7 +119,7 @@ function Tyres() {
           <SelectValue placeholder="Select vehicle" />
         </SelectTrigger>
         <SelectContent>
-          {trucks.map(t => (
+          {trucks.map((t: any) => (
             <SelectItem key={t.id} value={t.id}>{t.id} ({t.model})</SelectItem>
           ))}
         </SelectContent>
@@ -218,7 +218,7 @@ function Tyres() {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {vehicleTyres.map((t) => (
+              {vehicleTyres.map((t: any) => (
                 <Card key={t._id} className="glass shadow-elegant p-5 animate-fade-in group relative overflow-hidden">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">

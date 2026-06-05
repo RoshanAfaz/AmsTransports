@@ -128,7 +128,7 @@ function Dashboard() {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie data={expenseBreakdown} dataKey="value" nameKey="name" innerRadius={55} outerRadius={95} paddingAngle={2}>
-                    {expenseBreakdown.map((_, i) => (
+                    {expenseBreakdown.map((_: any, i: number) => (
                       <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                     ))}
                   </Pie>
@@ -138,7 +138,7 @@ function Dashboard() {
             )}
           </div>
           <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
-            {expenseBreakdown.slice(0, 6).map((e, i) => (
+            {expenseBreakdown.slice(0, 6).map((e: any, i: number) => (
               <div key={e.name} className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full" style={{ background: PIE_COLORS[i % PIE_COLORS.length] }} />
                 <span className="text-muted-foreground">{t(e.name)}</span>
@@ -166,7 +166,7 @@ function Dashboard() {
                   <YAxis stroke="var(--color-muted-foreground)" fontSize={11} tickFormatter={(v) => `₹${v}`} />
                   <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => formatINR(v)} />
                   <Bar dataKey="profit" radius={[8, 8, 0, 0]}>
-                    {truckProfit.map((d, i) => (
+                    {truckProfit.map((d: any, i: number) => (
                       <Cell key={i} fill={d.profit >= 0 ? "var(--color-chart-3)" : "var(--color-chart-4)"} />
                     ))}
                   </Bar>
@@ -210,7 +210,7 @@ function Dashboard() {
             {notifications.length === 0 ? (
               <div className="text-center py-6 text-xs text-muted-foreground">{t("All systems clear. No pending alerts.")}</div>
             ) : (
-              notifications.slice(0, 5).map((n) => (
+              notifications.slice(0, 5).map((n: any) => (
                 <div key={n.id} className="flex items-start gap-3 rounded-lg border border-border/60 bg-muted/30 p-3">
                   <span className={`mt-1 h-2 w-2 shrink-0 rounded-full ${n.type === "danger" ? "bg-destructive animate-pulse" : n.type === "warning" ? "bg-warning" : "bg-secondary"}`} />
                   <div className="flex-1 min-w-0">
