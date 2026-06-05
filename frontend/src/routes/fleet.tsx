@@ -106,8 +106,20 @@ function Fleet() {
             <Input id="model" name="model" placeholder="Tata Signa 4825" className="col-span-3 bg-muted/40" required />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="purchase" className="text-right text-xs">Price (₹)</Label>
-            <Input id="purchase" name="purchase" type="number" placeholder="3200000" className="col-span-3 bg-muted/40" required />
+            <Label htmlFor="chassisCost" className="text-right text-xs">Chassis Price (₹)</Label>
+            <Input id="chassisCost" name="chassisCost" type="number" placeholder="2800000" className="col-span-3 bg-muted/40" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="bodyCost" className="text-right text-xs">Body Build (₹)</Label>
+            <Input id="bodyCost" name="bodyCost" type="number" placeholder="700000" className="col-span-3 bg-muted/40" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="loanAmount" className="text-right text-xs">Loan Claimed (₹)</Label>
+            <Input id="loanAmount" name="loanAmount" type="number" placeholder="3100000" className="col-span-3 bg-muted/40" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="purchase" className="text-right text-xs">Total / Price (₹)</Label>
+            <Input id="purchase" name="purchase" type="number" placeholder="Or total price" className="col-span-3 bg-muted/40" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="openingKm" className="text-right text-xs">Opening Km</Label>
@@ -170,8 +182,20 @@ function Fleet() {
                 <Input id="edit-model" name="model" defaultValue={editingTruck.model} className="col-span-3 bg-muted/40" required />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="edit-purchase" className="text-right text-xs">Price (₹)</Label>
-                <Input id="edit-purchase" name="purchase" type="number" defaultValue={editingTruck.purchase} className="col-span-3 bg-muted/40" required />
+                <Label htmlFor="edit-chassisCost" className="text-right text-xs">Chassis Price (₹)</Label>
+                <Input id="edit-chassisCost" name="chassisCost" type="number" defaultValue={editingTruck.chassisCost || editingTruck.purchase} className="col-span-3 bg-muted/40" />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-bodyCost" className="text-right text-xs">Body Build (₹)</Label>
+                <Input id="edit-bodyCost" name="bodyCost" type="number" defaultValue={editingTruck.bodyCost || 0} className="col-span-3 bg-muted/40" />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-loanAmount" className="text-right text-xs">Loan Claimed (₹)</Label>
+                <Input id="edit-loanAmount" name="loanAmount" type="number" defaultValue={editingTruck.loanAmount || 0} className="col-span-3 bg-muted/40" />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-purchase" className="text-right text-xs">Total / Price (₹)</Label>
+                <Input id="edit-purchase" name="purchase" type="number" defaultValue={editingTruck.purchase} className="col-span-3 bg-muted/40" />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="edit-openingKm" className="text-right text-xs">Opening Km</Label>
@@ -256,7 +280,28 @@ function Fleet() {
               <div><p className="text-muted-foreground">Driver</p><p className="font-medium">{t.driver}</p></div>
               <div><p className="text-muted-foreground">Odometer</p><p className="font-medium">{(t.currentKm !== undefined ? t.currentKm : (t.openingKm || 0)).toLocaleString()} km</p></div>
               <div><p className="text-muted-foreground">Mileage</p><p className="font-medium">{t.mileage} km/L</p></div>
-              <div><p className="text-muted-foreground">Purchase</p><p className="font-medium">{formatINR(t.purchase)}</p></div>
+              <div>
+                <p className="text-muted-foreground">Purchase Cost</p>
+                <p className="font-medium">
+                  {formatINR(t.purchase)}
+                  {(t.chassisCost || t.bodyCost) ? (
+                    <span className="text-[9px] text-muted-foreground block leading-tight font-normal">
+                      ({formatINR(t.chassisCost || 0)} + {formatINR(t.bodyCost || 0)})
+                    </span>
+                  ) : null}
+                </p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Claimed Loan</p>
+                <p className="font-medium">
+                  {t.loanAmount ? formatINR(t.loanAmount) : "N/A"}
+                  {t.loanAmount && t.purchase ? (
+                    <span className="text-[9px] text-accent block leading-tight font-normal">
+                      ({((t.loanAmount / t.purchase) * 100).toFixed(0)}% Financed)
+                    </span>
+                  ) : null}
+                </p>
+              </div>
               <div><p className="text-muted-foreground">Insurance</p><p className="font-medium">{t.insurance}</p></div>
               <div><p className="text-muted-foreground">Permit</p><p className="font-medium">{t.permit}</p></div>
               <div><p className="text-muted-foreground">Fitness</p><p className="font-medium">{t.fitness}</p></div>

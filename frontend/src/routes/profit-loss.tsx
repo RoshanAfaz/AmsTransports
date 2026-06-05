@@ -8,6 +8,7 @@ import { Bar, BarChart, CartesianGrid, Cell, Line, ComposedChart, ResponsiveCont
 import { formatINR } from "@/lib/mock-data";
 import { apiGet } from "@/lib/api-fetch";
 import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const getPLData = createServerFn({ method: "GET" }).handler(async () => {
   return apiGet("/api/profit-loss");
@@ -27,6 +28,20 @@ function PL() {
   const [chassisCost, setChassisCost] = useState(2800000);
   const [loanClaimed, setLoanClaimed] = useState(3100000);
   const [bodyCost, setBodyCost] = useState(700000);
+  const [selectedTruckId, setSelectedTruckId] = useState<string>("custom");
+
+  const handleTruckSelect = (truckId: string) => {
+    setSelectedTruckId(truckId);
+    if (truckId === "custom") {
+      return;
+    }
+    const truck = trucks.find(t => t.id === truckId);
+    if (truck) {
+      setChassisCost(truck.chassisCost || truck.purchase || 0);
+      setBodyCost(truck.bodyCost || 0);
+      setLoanClaimed(truck.loanAmount || 0);
+    }
+  };
 
   const totalAssetValue = chassisCost + bodyCost;
   const netEquity = Math.max(0, totalAssetValue - loanClaimed);
@@ -45,9 +60,25 @@ function PL() {
       
       {/* Capital Investment & Loan Analyzer */}
       <Card className="glass shadow-elegant p-5 mb-6 animate-fade-in border-accent/20">
-        <div className="flex items-center gap-2 mb-4">
-          <Calculator className="h-5 w-5 text-accent" />
-          <h3 className="text-base font-semibold">Chassis & Loan Capital Analyzer</h3>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div className="flex items-center gap-2">
+            <Calculator className="h-5 w-5 text-accent" />
+            <h3 className="text-base font-semibold">Chassis & Loan Capital Analyzer</h3>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">Load Vehicle:</span>
+            <Select value={selectedTruckId} onValueChange={handleTruckSelect}>
+              <SelectTrigger className="h-8 w-44 bg-muted/40 text-xs border border-border">
+                <SelectValue placeholder="Select vehicle..." />
+              </SelectTrigger>
+              <SelectContent className="bg-popover text-popover-foreground border border-border">
+                <SelectItem value="custom">Custom (Manual)</SelectItem>
+                {trucks.map(t => (
+                  <SelectItem key={t.id} value={t.id}>{t.id}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <p className="text-xs text-muted-foreground mb-4">
           Analyze how surplus loan disbursements and hand-cash bodybuilding costs combine to define your true net out-of-pocket investment (Equity) vs. your bank liability.

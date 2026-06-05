@@ -63,13 +63,22 @@ function Ring({ pct }: { pct: number }) {
         strokeDasharray={c} strokeDashoffset={c * (1 - pct / 100)} strokeLinecap="round" />
     </svg>
   );
-}
-
-function EMI() {
+}function EMI() {
   const { emis, trucks } = Route.useLoaderData();
   const router = useRouter();
   const [openAdd, setOpenAdd] = useState(false);
   const [truckValue, setTruckValue] = useState("");
+  const [loanAmount, setLoanAmount] = useState("");
+
+  const handleTruckChange = (val: string) => {
+    setTruckValue(val);
+    const selectedTruck = trucks.find((t: any) => t.id === val);
+    if (selectedTruck && selectedTruck.loanAmount) {
+      setLoanAmount(selectedTruck.loanAmount.toString());
+    } else {
+      setLoanAmount("");
+    }
+  };
 
   async function onAddLoan(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -81,6 +90,7 @@ function EMI() {
       toast.success("Loan record added");
       setOpenAdd(false);
       setTruckValue("");
+      setLoanAmount("");
       router.invalidate();
     } catch {
       toast.error("Failed to add loan");
@@ -108,7 +118,7 @@ function EMI() {
   }
 
   const addAction = (
-    <Dialog open={openAdd} onOpenChange={setOpenAdd}>
+    <Dialog open={openAdd} onOpenChange={(val) => { setOpenAdd(val); if(!val) { setTruckValue(""); setLoanAmount(""); } }}>
       <DialogTrigger asChild>
         <Button className="bg-gradient-accent text-accent-foreground shadow-accent">
           <Plus className="mr-1 h-4 w-4" /> Add Loan
@@ -123,12 +133,12 @@ function EMI() {
           <div className="space-y-2">
             <Label className="text-xs">Select Vehicle</Label>
             <input type="hidden" name="truck" value={truckValue} required />
-            <Select value={truckValue} onValueChange={setTruckValue}>
+            <Select value={truckValue} onValueChange={handleTruckChange}>
               <SelectTrigger className="h-9 w-full bg-muted/40 text-sm border border-border">
                 <SelectValue placeholder="Select vehicle..." />
               </SelectTrigger>
               <SelectContent className="bg-popover text-popover-foreground border border-border">
-                {trucks.map(t => (
+                {trucks.map((t: any) => (
                   <SelectItem key={t.id} value={t.id}>{t.id}</SelectItem>
                 ))}
               </SelectContent>
@@ -139,11 +149,11 @@ function EMI() {
             <Label className="text-xs">Lender / Bank Name</Label>
             <Input name="lender" placeholder="e.g., HDFC Bank, Cholamandalam" className="bg-muted/40" required />
           </div>
-
+ 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className="text-xs">Principal Loan Amount (₹)</Label>
-              <Input name="loanAmount" type="number" placeholder="2500000" className="bg-muted/40" required />
+              <Input name="loanAmount" type="number" value={loanAmount} onChange={(e) => setLoanAmount(e.target.value)} placeholder="2500000" className="bg-muted/40" required />
             </div>
             <div className="space-y-2">
               <Label className="text-xs">Interest Rate (%)</Label>

@@ -300,6 +300,10 @@ app.post('/api/fleet', async (req, res) => {
     const driverName = data.driver || "Vacant";
 
     const openingKm = Number(data.openingKm || 0);
+    const chassisCost = Number(data.chassisCost || 0);
+    const bodyCost = Number(data.bodyCost || 0);
+    const loanAmount = Number(data.loanAmount || 0);
+    const purchaseVal = (chassisCost || bodyCost) ? (chassisCost + bodyCost) : Number(data.purchase || 0);
 
     await database.collection("trucks").insertOne({
       id: data.id,
@@ -308,7 +312,10 @@ app.post('/api/fleet', async (req, res) => {
       insurance: data.insurance || "N/A",
       permit: data.permit || "N/A",
       fitness: data.fitness || "N/A",
-      purchase: Number(data.purchase || 0),
+      purchase: purchaseVal,
+      chassisCost: chassisCost || purchaseVal,
+      bodyCost: bodyCost,
+      loanAmount: loanAmount,
       openingKm: openingKm,
       currentKm: openingKm,
       driver: driverName,
@@ -337,6 +344,11 @@ app.post('/api/fleet/edit', async (req, res) => {
 
     const oldTruck = await database.collection("trucks").findOne({ _id: new ObjectId(_id) });
 
+    const chassisCost = Number(updateData.chassisCost || 0);
+    const bodyCost = Number(updateData.bodyCost || 0);
+    const loanAmount = Number(updateData.loanAmount || 0);
+    const purchaseVal = (chassisCost || bodyCost) ? (chassisCost + bodyCost) : Number(updateData.purchase || 0);
+
     await database.collection("trucks").updateOne(
       { _id: new ObjectId(_id) },
       {
@@ -347,7 +359,10 @@ app.post('/api/fleet/edit', async (req, res) => {
           insurance: updateData.insurance || "N/A",
           permit: updateData.permit || "N/A",
           fitness: updateData.fitness || "N/A",
-          purchase: Number(updateData.purchase || 0),
+          purchase: purchaseVal,
+          chassisCost: chassisCost || purchaseVal,
+          bodyCost: bodyCost,
+          loanAmount: loanAmount,
           openingKm: Number(updateData.openingKm || 0),
           driver: driverName,
           status: updateData.status
