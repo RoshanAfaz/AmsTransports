@@ -45,31 +45,31 @@ export function LoginPage({ onLogin }: LoginPageProps) {
   };
 
   return (
-    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-[#070b19] px-4 font-sans text-foreground">
+    <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-slate-50 px-4 font-sans text-slate-900">
       {/* Decorative animated mesh gradients in the background */}
-      <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-[#1e40af]/20 blur-[120px] animate-pulse" />
-      <div className="absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-[#f97316]/10 blur-[120px] animate-pulse" style={{ animationDuration: '6s' }} />
-      <div className="absolute top-[30%] right-[20%] h-[300px] w-[300px] rounded-full bg-[#14b8a6]/10 blur-[100px] animate-pulse" style={{ animationDuration: '8s' }} />
+      <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-blue-200/40 blur-[120px] animate-pulse" />
+      <div className="absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-indigo-200/30 blur-[120px] animate-pulse" style={{ animationDuration: '6s' }} />
+      <div className="absolute top-[30%] right-[20%] h-[300px] w-[300px] rounded-full bg-emerald-100/40 blur-[100px] animate-pulse" style={{ animationDuration: '8s' }} />
 
       {/* Futuristic grid overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-[0.2]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-[0.4]" />
 
       <div className="relative w-full max-w-[450px] animate-fade-in">
-        {/* Glowing border ring effect around the card */}
-        <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-[#1e40af] via-[#38bdf8] to-[#f97316] opacity-30 blur-md transition duration-1000 group-hover:opacity-100" />
+        {/* Subtle border shadow effect around the card */}
+        <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 opacity-20 blur-md" />
         
-        {/* Main card body with glassmorphism */}
-        <div className="relative rounded-2xl border border-white/10 bg-[#0f172a]/80 p-8 shadow-2xl backdrop-blur-xl md:p-10">
+        {/* Main card body with light theme glassmorphism */}
+        <div className="relative rounded-2xl border border-slate-200 bg-white p-8 shadow-elegant md:p-10">
           
           {/* Logo / Header Section */}
           <div className="mb-8 flex flex-col items-center text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e40af] to-[#38bdf8] shadow-lg shadow-[#1e40af]/30 mb-4 animate-bounce-slow">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/20 mb-4">
               <Truck className="h-7 w-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
-              AMS <span className="text-[#38bdf8]">TRANSPORTS</span>
+            <h1 className="text-2xl font-black tracking-tight text-slate-800 md:text-3xl">
+              AMS <span className="text-blue-600">TRANSPORTS</span>
             </h1>
-            <p className="mt-1.5 text-xs uppercase tracking-[0.2em] text-[#f97316] font-semibold">
+            <p className="mt-1.5 text-xs uppercase tracking-[0.2em] text-slate-400 font-bold">
               Fleet Command Centre
             </p>
           </div>
@@ -77,19 +77,19 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Display error if invalid credentials */}
             {error && (
-              <div className="flex items-center gap-2 rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-xs text-destructive-foreground animate-shake">
-                <AlertCircle className="h-4 w-4 shrink-0" />
+              <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-700 animate-shake">
+                <AlertCircle className="h-4 w-4 shrink-0 text-red-500" />
                 <span>{error}</span>
               </div>
             )}
 
             {/* Email/Phone Input Field */}
             <div className="space-y-1.5">
-              <Label htmlFor="identifier" className="text-xs font-semibold text-muted-foreground">
+              <Label htmlFor="identifier" className="text-xs font-bold text-slate-500">
                 Email Address or Phone Number
               </Label>
               <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground/75">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                   <Mail className="h-4 w-4" />
                 </div>
                 <Input
@@ -99,7 +99,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                   placeholder="Email/Phone"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
-                  className="h-11 pl-10 bg-muted/30 border-white/10 text-white placeholder-muted-foreground/60 focus:border-[#38bdf8] focus:ring-1 focus:ring-[#38bdf8]/50 rounded-xl transition-all font-medium text-sm"
+                  className="h-11 pl-10 bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 rounded-xl transition-all font-medium text-sm"
                 />
               </div>
             </div>
@@ -107,12 +107,12 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             {/* Password Input Field */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-xs font-semibold text-muted-foreground">
+                <Label htmlFor="password" className="text-xs font-bold text-slate-500">
                   Secure Password
                 </Label>
               </div>
               <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground/75">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                   <Lock className="h-4 w-4" />
                 </div>
                 <Input
@@ -122,23 +122,23 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                   placeholder="••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-11 pl-10 pr-10 bg-muted/30 border-white/10 text-white placeholder-muted-foreground/60 focus:border-[#38bdf8] focus:ring-1 focus:ring-[#38bdf8]/50 rounded-xl transition-all font-medium text-sm"
+                  className="h-11 pl-10 pr-10 bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 rounded-xl transition-all font-medium text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground/75 hover:text-white transition-colors"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
 
-            {/* Remember Me / Security Badge */}
+            {/* Security Session Badge */}
             <div className="flex items-center justify-between text-xs py-1">
-              <div className="flex items-center gap-2 text-muted-foreground font-medium">
-                <ShieldCheck className="h-4 w-4 text-[#14b8a6]" />
-                <span>Authorized Session Only</span>
+              <div className="flex items-center gap-2 text-slate-500 font-semibold">
+                <ShieldCheck className="h-4 w-4 text-emerald-500" />
+                <span>Authorized Fleet Session</span>
               </div>
             </div>
 
@@ -146,7 +146,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             <Button
               type="submit"
               disabled={loading}
-              className="relative w-full h-11 bg-gradient-to-r from-[#1e40af] to-[#38bdf8] hover:from-[#1d4ed8] hover:to-[#0284c7] text-white font-semibold rounded-xl shadow-lg shadow-[#1e40af]/20 transition-all active:scale-[0.98] duration-150 flex items-center justify-center overflow-hidden"
+              className="relative w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-md shadow-blue-500/10 transition-all active:scale-[0.98] duration-150 flex items-center justify-center overflow-hidden"
             >
               {loading ? (
                 <div className="flex items-center gap-2">
@@ -159,7 +159,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             </Button>
           </form>
           
-          <div className="mt-8 text-center text-[10px] text-muted-foreground/60 font-semibold tracking-wider uppercase">
+          <div className="mt-8 text-center text-[10px] text-slate-400 font-bold tracking-wider uppercase">
             AMS TRANSPORTS LOGISTICS GROUP &copy; {new Date().getFullYear()}
           </div>
         </div>

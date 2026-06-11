@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 
 export function Topbar() {
-  const [dark, setDark] = useState(true);
+  const [dark, setDark] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("welcome");
   const { language, setLanguage, t } = useLanguage();

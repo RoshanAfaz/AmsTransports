@@ -13,10 +13,10 @@ import { useLanguage } from "@/lib/language-context";
 const groups = [
   {
     label: "Overview",
-    colorClass: "text-[#38bdf8]", // Sky Blue
-    barColor: "bg-[#38bdf8]",
-    shadowColor: "shadow-[#38bdf8]/50",
-    bgClass: "data-[active=true]:bg-[#38bdf8]/10 data-[active=true]:text-[#38bdf8]",
+    colorClass: "text-blue-600",
+    barColor: "bg-blue-600",
+    shadowColor: "shadow-blue-600/30",
+    bgClass: "data-[active=true]:bg-blue-50 data-[active=true]:text-blue-600",
     items: [
       { title: "Dashboard", url: "/", icon: LayoutDashboard },
       { title: "Analytics", url: "/analytics", icon: TrendingUp },
@@ -24,10 +24,10 @@ const groups = [
   },
   {
     label: "Operations",
-    colorClass: "text-[#34d399]", // Emerald
-    barColor: "bg-[#34d399]",
-    shadowColor: "shadow-[#34d399]/50",
-    bgClass: "data-[active=true]:bg-[#34d399]/10 data-[active=true]:text-[#34d399]",
+    colorClass: "text-indigo-600",
+    barColor: "bg-indigo-600",
+    shadowColor: "shadow-indigo-600/30",
+    bgClass: "data-[active=true]:bg-indigo-50 data-[active=true]:text-indigo-600",
     items: [
       { title: "Fleet", url: "/fleet", icon: Truck },
       { title: "Garage", url: "/garage", icon: Warehouse },
@@ -40,10 +40,10 @@ const groups = [
   },
   {
     label: "Finance",
-    colorClass: "text-[#fbbf24]", // Amber
-    barColor: "bg-[#fbbf24]",
-    shadowColor: "shadow-[#fbbf24]/50",
-    bgClass: "data-[active=true]:bg-[#fbbf24]/10 data-[active=true]:text-[#fbbf24]",
+    colorClass: "text-emerald-600",
+    barColor: "bg-emerald-600",
+    shadowColor: "shadow-emerald-600/30",
+    bgClass: "data-[active=true]:bg-emerald-50 data-[active=true]:text-emerald-600",
     items: [
       { title: "Expenses", url: "/expenses", icon: Receipt },
       { title: "EMI & Loans", url: "/emi", icon: CreditCard },
@@ -52,10 +52,10 @@ const groups = [
   },
   {
     label: "System",
-    colorClass: "text-[#f472b6]", // Pink
-    barColor: "bg-[#f472b6]",
-    shadowColor: "shadow-[#f472b6]/50",
-    bgClass: "data-[active=true]:bg-[#f472b6]/10 data-[active=true]:text-[#f472b6]",
+    colorClass: "text-violet-600",
+    barColor: "bg-violet-600",
+    shadowColor: "shadow-violet-600/30",
+    bgClass: "data-[active=true]:bg-violet-50 data-[active=true]:text-violet-600",
     items: [
       { title: "Reports", url: "/reports", icon: FileText },
       { title: "Notifications", url: "/notifications", icon: Bell },
@@ -77,14 +77,14 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="offcanvas" className="border-r border-sidebar-border">
-      <SidebarHeader className="border-b border-sidebar-border group-data-[state=collapsed]:p-2 pt-[calc(0.5rem+env(safe-area-inset-top,0px))]">
+      <SidebarHeader className="border-b border-sidebar-border group-data-[state=collapsed]:p-2 pt-[calc(0.5rem+env(safe-area-inset-top,0px))] bg-[#fafafa]">
         <div className="flex items-center gap-3 px-2 py-3 group-data-[state=collapsed]:px-0 group-data-[state=collapsed]:justify-center transition-all duration-200">
-          <div className="flex h-10 w-10 group-data-[state=collapsed]:h-8 group-data-[state=collapsed]:w-8 shrink-0 items-center justify-center rounded-xl bg-white border border-white/10 shadow-sm transition-all duration-200">
-            <Truck className="h-5 w-5 group-data-[state=collapsed]:h-4 group-data-[state=collapsed]:w-4 text-[#0a1120] transition-all duration-200" />
+          <div className="flex h-10 w-10 group-data-[state=collapsed]:h-8 group-data-[state=collapsed]:w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-md transition-all duration-200">
+            <Truck className="h-5 w-5 group-data-[state=collapsed]:h-4 group-data-[state=collapsed]:w-4 text-white transition-all duration-200" />
           </div>
           <div className="flex flex-col transition-all duration-200 group-data-[state=collapsed]:hidden">
-            <span className="text-sm font-bold tracking-wider text-[#34d399]">AMS TRANSPORTS</span>
-            <span className="text-[10px] uppercase tracking-[0.15em] text-[#f97316] font-semibold">Fleet Command Centre</span>
+            <span className="text-sm font-extrabold tracking-wider text-slate-800">AMS TRANSPORTS</span>
+            <span className="text-[10px] uppercase tracking-[0.15em] text-slate-400 font-bold">Fleet Command Centre</span>
           </div>
         </div>
       </SidebarHeader>

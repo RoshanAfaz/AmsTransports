@@ -47,8 +47,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { LoginPage } from "@/components/login-page";
+import { TruckLoader } from "@/components/truck-loader";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
@@ -57,7 +58,11 @@ function RootComponent() {
   const [bgImage, setBgImage] = useState<string | null>(null);
 
   useEffect(() => {
-    setIsMounted(true);
+    // Artificial mounting/waking delay to show the gorgeous truck loader drive
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 1800);
+
     setIsAuthenticated(localStorage.getItem("ams_auth") === "true");
     setBgImage(localStorage.getItem("ams_bg_image"));
 
@@ -67,20 +72,20 @@ function RootComponent() {
       setBgImage(val);
     };
     window.addEventListener("ams_bg_image_changed", handleBgChange);
-    return () => window.removeEventListener("ams_bg_image_changed", handleBgChange);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("ams_bg_image_changed", handleBgChange);
+    };
   }, []);
 
   console.log("DEBUG: RootComponent render, bgImage:", bgImage ? bgImage.slice(0, 50) + "..." : null);
 
   if (!isMounted) {
     return (
-      <div className="flex min-h-screen w-full items-center justify-center bg-[#070b19] font-sans">
-        <div className="text-center">
-          <div className="relative h-12 w-12 mx-auto mb-4">
-            <div className="absolute inset-0 rounded-full border-4 border-blue-900" />
-            <div className="absolute inset-0 rounded-full border-4 border-blue-400 border-t-transparent animate-spin" />
-          </div>
-          <p className="text-sm font-bold tracking-widest text-blue-400 uppercase">AMS TRANSPORTS</p>
+      <div className="flex min-h-screen w-full items-center justify-center bg-[#070b19] font-sans overflow-hidden">
+        <div className="text-center flex flex-col items-center">
+          <TruckLoader />
+          <p className="text-sm font-bold tracking-widest text-[#38bdf8] uppercase mt-6">AMS TRANSPORTS</p>
           <p className="text-[10px] text-muted-foreground/60 tracking-wider uppercase mt-1.5 font-semibold">Establishing Secure Link...</p>
         </div>
       </div>
@@ -116,7 +121,13 @@ function RootComponent() {
             >
               <Topbar />
               <main className="flex-1 p-4 md:p-6 lg:p-8">
-                <Outlet />
+                <Suspense fallback={
+                  <div className="flex h-[50vh] w-full items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#38bdf8]" />
+                  </div>
+                }>
+                  <Outlet />
+                </Suspense>
               </main>
             </SidebarInset>
           </div>
