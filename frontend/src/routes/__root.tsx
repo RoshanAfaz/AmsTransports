@@ -55,7 +55,6 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [bgImage, setBgImage] = useState<string | null>(null);
 
   useEffect(() => {
     // Artificial mounting/waking delay to show the gorgeous truck loader drive
@@ -64,21 +63,11 @@ function RootComponent() {
     }, 1800);
 
     setIsAuthenticated(localStorage.getItem("ams_auth") === "true");
-    setBgImage(localStorage.getItem("ams_bg_image"));
 
-    const handleBgChange = () => {
-      const val = localStorage.getItem("ams_bg_image");
-      console.log("DEBUG: handleBgChange event triggered, val:", val ? val.slice(0, 50) + "..." : null);
-      setBgImage(val);
-    };
-    window.addEventListener("ams_bg_image_changed", handleBgChange);
     return () => {
       clearTimeout(timer);
-      window.removeEventListener("ams_bg_image_changed", handleBgChange);
     };
   }, []);
-
-  console.log("DEBUG: RootComponent render, bgImage:", bgImage ? bgImage.slice(0, 50) + "..." : null);
 
   if (!isMounted) {
     return (
@@ -106,13 +95,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <SidebarProvider defaultOpen={false}>
-          <div 
-            className={`flex min-h-screen w-full relative overflow-hidden bg-cover bg-center bg-no-repeat transition-all duration-500 ${!bgImage ? "bg-background bg-grid" : ""}`}
-            style={bgImage ? { backgroundImage: `url("${bgImage}")` } : undefined}
-          >
-            {bgImage && (
-              <div className="absolute inset-0 pointer-events-none backdrop-blur-[3px]" style={{ backgroundColor: "rgba(10, 15, 30, 0.85)" }} />
-            )}
+          <div className="flex min-h-screen w-full relative overflow-hidden bg-background bg-grid transition-all duration-500">
             <div className="absolute inset-0 pointer-events-none bg-gradient-glow opacity-80" />
             <AppSidebar />
             <SidebarInset 

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { apiGet, apiPost } from "@/lib/api-fetch";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Trash2, Image } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useLanguage, Language } from "@/lib/language-context";
 import {
   AlertDialog,
@@ -60,72 +60,7 @@ function Settings() {
   const [gstin, setGstin] = useState(settings.gstin || "33ABCDE1234F1Z5");
   const [headOffice, setHeadOffice] = useState(settings.headOffice || "Chennai, TN");
   const [dieselPrice, setDieselPrice] = useState(settings.dieselPrice || 92.4);
-  const [bgInput, setBgInput] = useState("");
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setBgInput(localStorage.getItem("ams_bg_image") || "");
-    }
-  }, []);
-
-  function handleBgSave(url: string) {
-    console.log("DEBUG: handleBgSave called with url:", url ? url.slice(0, 50) + "..." : null);
-    if (!url) {
-      localStorage.removeItem("ams_bg_image");
-      setBgInput("");
-      toast.success("Background reset to default!");
-    } else {
-      localStorage.setItem("ams_bg_image", url);
-      setBgInput(url);
-      toast.success("Background image updated!");
-    }
-    console.log("DEBUG: Dispatching ams_bg_image_changed event on window");
-    window.dispatchEvent(new Event("ams_bg_image_changed"));
-  }
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 10 * 1024 * 1024) {
-      toast.error("File is too large. Please select an image under 10MB.");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new window.Image();
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        const MAX_WIDTH = 1280;
-        const MAX_HEIGHT = 1280;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        ctx?.drawImage(img, 0, 0, width, height);
-
-        const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
-        handleBgSave(dataUrl);
-      };
-      img.src = event.target?.result as string;
-    };
-    reader.readAsDataURL(file);
-  };
 
   async function handleClearDatabase() {
     setIsClearing(true);
@@ -219,75 +154,6 @@ function Settings() {
           </div>
         </Card>
 
-        <Card className="glass shadow-elegant p-5 animate-fade-in flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Image className="h-5 w-5 text-accent" />
-              <h3 className="text-base font-semibold">{t("Background Image")}</h3>
-            </div>
-            <p className="text-xs text-muted-foreground mb-4">
-              {t("Paste any image URL or select from our curated high-quality presets to set a custom system background.")}
-            </p>
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <Label htmlFor="bg-url-input" className="text-xs font-semibold">{t("Custom Image URL")}</Label>
-                <Input
-                  id="bg-url-input"
-                  placeholder="https://example.com/image.jpg"
-                  value={bgInput}
-                  onChange={(e) => setBgInput(e.target.value)}
-                  className="bg-muted/40 h-9"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="bg-file-input" className="text-xs font-semibold">{t("Upload from Device")}</Label>
-                <Input
-                  id="bg-file-input"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="bg-muted/40 h-9 p-1 cursor-pointer text-xs file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-[10px] file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs font-semibold">{t("Curated Presets")}</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { name: t("Cyber Highway"), url: "https://images.unsplash.com/photo-1515621061946-eff1c2a352bd?q=80&w=1000&auto=format&fit=crop" },
-                    { name: t("Starry Sky"), url: "https://images.unsplash.com/photo-1506318137071-a8e063b4bec0?q=80&w=1000&auto=format&fit=crop" },
-                    { name: t("Neon City"), url: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1000&auto=format&fit=crop" }
-                  ].map((preset) => (
-                    <Button 
-                      key={preset.name} 
-                      variant="outline" 
-                      size="sm"
-                      className="text-[10px] h-8 truncate px-1 hover:border-accent/40"
-                      onClick={() => handleBgSave(preset.url)}
-                    >
-                      {preset.name}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="mt-6 flex justify-end gap-2">
-            <Button 
-              variant="outline"
-              size="sm"
-              onClick={() => handleBgSave("")}
-              className="text-xs h-9"
-            >
-              {t("Reset Default")}
-            </Button>
-            <Button 
-              onClick={() => handleBgSave(bgInput)}
-              className="bg-gradient-accent text-accent-foreground text-xs h-9 min-w-[80px]"
-            >
-              {t("Apply")}
-            </Button>
-          </div>
-        </Card>
 
         <Card className="glass shadow-elegant p-5 animate-fade-in">
           <h3 className="text-base font-semibold">{t("Data & Backup")}</h3>
