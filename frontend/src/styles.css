@@ -204,8 +204,8 @@
   .bg-gradient-success { background: var(--gradient-success); }
   .bg-grid {
     background-image:
-      linear-gradient(to right, color-mix(in oklab, var(--color-border) 60%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in oklab, var(--color-border) 60%, transparent) 1px, transparent 1px);
+      linear-gradient(to right, var(--color-border) 0.5px, transparent 0.5px),
+      linear-gradient(to bottom, var(--color-border) 0.5px, transparent 0.5px);
     background-size: 32px 32px;
   }
   .glass-interactive {
@@ -244,6 +244,24 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-muted-foreground);
+}
+
+/* Mobile web performance optimization by disabling expensive backdrop-filters on screen widths <= 1024px */
+@media (max-width: 1024px) {
+  .glass {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--color-card) !important;
+  }
+  header,
+  .backdrop-blur-xl,
+  .backdrop-blur-\[3px\] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  header {
+    background: var(--color-background) !important;
+  }
 }
 
 /* Mobile performance optimization by disabling expensive backdrop-filters on native apps */
