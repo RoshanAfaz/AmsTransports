@@ -144,7 +144,7 @@ function Reports() {
         t.date || "N/A", 
         t.truck, 
         t.driver, 
-        `${t.source} to ${t.destination}`, 
+        t.tripType === "Round" ? `${t.source} to ${t.destination} / ${t.returnSource || "N/A"} to ${t.returnDestination || "N/A"}` : `${t.source} to ${t.destination}`, 
         `${t.distance || 0} km`,
         t.revenue || 0,
         dieselCost,
@@ -168,7 +168,7 @@ function Reports() {
         t.memoNo || `TRP${t._id.slice(-6).toUpperCase()}`, 
         t.date || "N/A", 
         t.truck, 
-        `${t.source} to ${t.destination}`, 
+        t.tripType === "Round" ? `${t.source} to ${t.destination} / ${t.returnSource || "N/A"} to ${t.returnDestination || "N/A"}` : `${t.source} to ${t.destination}`, 
         `${t.distance || 0} km`, 
         fuel.cost, 
         `${mileage} km/L`

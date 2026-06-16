@@ -290,16 +290,43 @@ function Trips() {
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="source" className="text-xs">{t("Source / Loading Point")}</Label>
-              <Input id="source" name="source" placeholder="e.g. Chennai, TN" className="bg-muted/40 h-9" required />
+          {tripType === "Round" ? (
+            <div className="border border-border/60 rounded-lg p-3 bg-muted/20 space-y-3">
+              <h4 className="text-xs font-bold text-accent uppercase tracking-wider">{t("Outward Route")}</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label htmlFor="source" className="text-xs">{t("Outward Loading Point (A)")}</Label>
+                  <Input id="source" name="source" placeholder="e.g. Chennai, TN" className="bg-muted/40 h-9" required />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="destination" className="text-xs">{t("Outward Unloading Point (B)")}</Label>
+                  <Input id="destination" name="destination" placeholder="e.g. Ahmedabad, GJ" className="bg-muted/40 h-9" required />
+                </div>
+              </div>
+              <h4 className="text-xs font-bold text-success uppercase tracking-wider pt-1 border-t border-border/40">{t("Return Route")}</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label htmlFor="returnSource" className="text-xs">{t("Return Loading Point (C)")}</Label>
+                  <Input id="returnSource" name="returnSource" placeholder="e.g. Anand, GJ (near B)" className="bg-muted/40 h-9" required />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="returnDestination" className="text-xs">{t("Return Unloading Point (D)")}</Label>
+                  <Input id="returnDestination" name="returnDestination" placeholder="e.g. Salem, TN (near A)" className="bg-muted/40 h-9" required />
+                </div>
+              </div>
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="destination" className="text-xs">{t("Destination / Unloading Point")}</Label>
-              <Input id="destination" name="destination" placeholder="e.g. Ahmedabad, GJ" className="bg-muted/40 h-9" required />
+          ) : (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="source" className="text-xs">{t("Source / Loading Point")}</Label>
+                <Input id="source" name="source" placeholder="e.g. Chennai, TN" className="bg-muted/40 h-9" required />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="destination" className="text-xs">{t("Destination / Unloading Point")}</Label>
+                <Input id="destination" name="destination" placeholder="e.g. Ahmedabad, GJ" className="bg-muted/40 h-9" required />
+              </div>
             </div>
-          </div>
+          )}
  
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-1">
@@ -760,6 +787,8 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
   const [returnClosingKm, setReturnClosingKm] = useState(t.returnClosingKm?.toString() || "");
   const [returnDiesel, setReturnDiesel] = useState(t.returnDiesel?.toString() || "");
   const [returnLitres, setReturnLitres] = useState(t.returnLitres?.toString() || "");
+  const [returnSource, setReturnSource] = useState(t.returnSource || "");
+  const [returnDestination, setReturnDestination] = useState(t.returnDestination || "");
 
   const [lastEditedSingle, setLastEditedSingle] = useState<"diesel" | "litres">("diesel");
   const [lastEditedOutward, setLastEditedOutward] = useState<"diesel" | "litres">("diesel");
@@ -789,6 +818,8 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
     setReturnClosingKm(t.returnClosingKm?.toString() || "");
     setReturnDiesel(t.returnDiesel?.toString() || "");
     setReturnLitres(t.returnLitres?.toString() || "");
+    setReturnSource(t.returnSource || "");
+    setReturnDestination(t.returnDestination || "");
     setFood(t.food?.toString() || "0");
     setParking(t.parking?.toString() || "0");
     setLoading(t.loading?.toString() || "0");
@@ -927,6 +958,8 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
         payload.returnLitres = Number(returnLitres);
         payload.dieselRate = Number(outwardDieselRate);
         payload.returnDieselRate = Number(returnDieselRate);
+        payload.returnSource = returnSource;
+        payload.returnDestination = returnDestination;
       } else {
         payload.closingKm = Number(closingKm);
         payload.diesel = Number(diesel);
@@ -1008,9 +1041,16 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
     doc.text(`Assigned Driver: ${t.driver}`, 15, 74);
     
     doc.text(`Customer / Bill To: ${t.customer || "Direct Client"}`, 110, 56);
-    doc.text(`Route: ${t.source} to ${t.destination}`, 110, 62);
-    doc.text(`Trip Mode: ${t.tripType || "Single"} (${t.status})`, 110, 68);
-    doc.text(`Cargo / Material: ${t.load}`, 110, 74);
+    if (t.tripType === "Round") {
+      doc.text(`Outward Route: ${t.source} to ${t.destination}`, 110, 62);
+      doc.text(`Return Route: ${t.returnSource || "N/A"} to ${t.returnDestination || "N/A"}`, 110, 68);
+      doc.text(`Trip Mode: Round Trip (${t.status})`, 110, 74);
+      doc.text(`Cargo / Material: ${t.load}`, 15, 80);
+    } else {
+      doc.text(`Route: ${t.source} to ${t.destination}`, 110, 62);
+      doc.text(`Trip Mode: Single Trip (${t.status})`, 110, 68);
+      doc.text(`Cargo / Material: ${t.load}`, 110, 74);
+    }
     
     // Financial Title
     doc.setFont("helvetica", "bold");
@@ -1113,11 +1153,32 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
                 </Badge>
               )}
             </div>
-            <div className="mt-1.5 flex items-center gap-2 text-base font-semibold">
-              <MapPin className="h-4 w-4 text-accent" /> {t.source}
-              <ArrowRight className="h-4 w-4 text-muted-foreground" />
-              <MapPin className="h-4 w-4 text-success" /> {t.destination}
-            </div>
+            {t.tripType === "Round" ? (
+              <div className="mt-1.5 space-y-1 bg-muted/20 border border-border/40 rounded-lg p-2 max-w-[280px] xs:max-w-xs sm:max-w-sm">
+                <div className="flex items-center gap-2 text-[11px] font-semibold">
+                  <span className="text-[8px] uppercase font-bold text-accent px-1.5 py-0.5 rounded bg-accent/10 shrink-0">Outward</span>
+                  <MapPin className="h-3 w-3 text-accent shrink-0" />
+                  <span className="truncate" title={t.source}>{t.source}</span>
+                  <ArrowRight className="h-3 w-3 text-muted-foreground shrink-0" />
+                  <MapPin className="h-3 w-3 text-success shrink-0" />
+                  <span className="truncate" title={t.destination}>{t.destination}</span>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] font-semibold pt-1 border-t border-border/20">
+                  <span className="text-[8px] uppercase font-bold text-success px-1.5 py-0.5 rounded bg-success/10 shrink-0">Return</span>
+                  <MapPin className="h-3 w-3 text-success shrink-0" />
+                  <span className="truncate" title={t.returnSource}>{t.returnSource || translate("Pending...")}</span>
+                  <ArrowRight className="h-3 w-3 text-muted-foreground shrink-0" />
+                  <MapPin className="h-3 w-3 text-accent shrink-0" />
+                  <span className="truncate" title={t.returnDestination}>{t.returnDestination || translate("Pending...")}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-1.5 flex items-center gap-2 text-sm font-semibold">
+                <MapPin className="h-4 w-4 text-accent shrink-0" /> {t.source}
+                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                <MapPin className="h-4 w-4 text-success shrink-0" /> {t.destination}
+              </div>
+            )}
             <p className="mt-1 text-xs text-muted-foreground flex items-center gap-2">
               <span className="font-semibold text-foreground flex items-center gap-0.5"><Truck className="h-3 w-3 text-muted-foreground" /> {t.truck}</span> · 
               <span className="flex items-center gap-0.5"><User className="h-3 w-3 text-muted-foreground" /> {t.driver}</span> · 
@@ -1254,7 +1315,7 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
 
 
                 <div className="text-xs bg-muted/20 border border-border/40 rounded p-2">
-                  <p className="font-bold text-[11px] text-success-foreground">{translate("Return")}: {t.destination} → {t.source}</p>
+                  <p className="font-bold text-[11px] text-success-foreground">{translate("Return")}: {t.returnSource || "N/A"} → {t.returnDestination || "N/A"}</p>
                   <div className="grid grid-cols-3 gap-2 mt-1.5 text-[11px]">
                     <div>
                       <span className="text-muted-foreground">{translate("Odometer Status")?.replace(" Status", "") || "Odo"}:</span>
@@ -1450,6 +1511,30 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
                               }} 
                               placeholder="litres" 
                               className="bg-muted/40 h-9" 
+                            />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 mt-2">
+                          <div className="space-y-1">
+                            <Label htmlFor="returnSource" className="text-xs">{translate("Return Loading Point (C)")}</Label>
+                            <Input 
+                              id="returnSource" 
+                              type="text" 
+                              required 
+                              value={returnSource} 
+                              onChange={(e) => setReturnSource(e.target.value)} 
+                              className="bg-muted/40 h-9 text-xs" 
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <Label htmlFor="returnDestination" className="text-xs">{translate("Return Unloading Point (D)")}</Label>
+                            <Input 
+                              id="returnDestination" 
+                              type="text" 
+                              required 
+                              value={returnDestination} 
+                              onChange={(e) => setReturnDestination(e.target.value)} 
+                              className="bg-muted/40 h-9 text-xs" 
                             />
                           </div>
                         </div>
