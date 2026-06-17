@@ -42,9 +42,12 @@ export const deleteExpenseAction = createServerFn({ method: "POST" })
     return apiPost("/api/expenses/delete", { id: data._id });
   });
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/expenses")({
   head: () => ({ meta: [{ title: "Expenses — AMS Transports" }, { name: "description", content: "All business expenses, categorized and filterable." }] }),
-  loader: () => getExpensesData(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["expenses"], queryFn: getExpensesData }),
   component: Expenses,
 });
 

@@ -14,9 +14,12 @@ export const getAnalyticsData = createServerFn({ method: "GET" }).handler(async 
   return apiGet("/api/analytics");
 });
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/analytics")({
   head: () => ({ meta: [{ title: "Analytics — AMS Transports" }, { name: "description", content: "Predictive analytics for transport operations." }] }),
-  loader: () => getAnalyticsData(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["analytics"], queryFn: getAnalyticsData }),
   component: Analytics,
 });
 

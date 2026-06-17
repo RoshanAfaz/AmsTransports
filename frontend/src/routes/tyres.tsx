@@ -51,9 +51,12 @@ export const deleteTyreAction = createServerFn({ method: "POST" })
     return apiPost("/api/tyres/delete", { id: data._id });
   });
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/tyres")({
   head: () => ({ meta: [{ title: "Tyres — AMS Transports" }, { name: "description", content: "Tyre lifecycle and replacement tracking per vehicle." }] }),
-  loader: () => getTyresData(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["tyres"], queryFn: getTyresData }),
   component: Tyres,
 });
 

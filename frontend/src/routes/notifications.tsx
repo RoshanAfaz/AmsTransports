@@ -10,9 +10,12 @@ export const getNotificationsData = createServerFn({ method: "GET" }).handler(as
   return apiGet("/api/notifications");
 });
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/notifications")({
   head: () => ({ meta: [{ title: "Notifications — AMS Transports" }, { name: "description", content: "All alerts and system notifications." }] }),
-  loader: () => getNotificationsData(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["notifications"], queryFn: getNotificationsData }),
   component: Notifications,
 });
 

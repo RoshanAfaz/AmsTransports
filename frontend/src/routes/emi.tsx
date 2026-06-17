@@ -48,9 +48,12 @@ export const deleteEmiAction = createServerFn({ method: "POST" })
   });
 
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/emi")({
   head: () => ({ meta: [{ title: "EMI & Loans — AMS Transports" }, { name: "description", content: "EMI schedules, payments and loan balance tracking." }] }),
-  loader: () => getEmiData(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["emi"], queryFn: getEmiData }),
   component: EMI,
 });
 

@@ -30,9 +30,12 @@ export const editFleetAction = createServerFn({ method: "POST" })
     return apiPost("/api/fleet/edit", data);
   });
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/fleet")({
   head: () => ({ meta: [{ title: "Fleet — AMS Transports" }, { name: "description", content: "Manage your truck fleet, status, insurance and permits." }] }),
-  loader: () => getFleet(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["fleet"], queryFn: getFleet }),
   component: Fleet,
 });
 

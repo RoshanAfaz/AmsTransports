@@ -18,9 +18,12 @@ export const getReportsData = createServerFn({ method: "GET" }).handler(async ()
   return apiGet("/api/reports");
 });
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/reports")({
   head: () => ({ meta: [{ title: "Reports — AMS Transports" }, { name: "description", content: "Generate and export business reports." }] }),
-  loader: () => getReportsData(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["reports"], queryFn: getReportsData }),
   component: Reports,
 });
 

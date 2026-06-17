@@ -49,9 +49,12 @@ export const deleteServiceAction = createServerFn({ method: "POST" })
     return apiPost("/api/maintenance/delete", { id: data._id });
   });
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/maintenance")({
   head: () => ({ meta: [{ title: "Maintenance — AMS Transports" }, { name: "description", content: "Service history and upcoming maintenance reminders per vehicle." }] }),
-  loader: () => getMaintenanceData(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["maintenance"], queryFn: getMaintenanceData }),
   component: Maintenance,
 });
 

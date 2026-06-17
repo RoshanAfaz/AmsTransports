@@ -39,12 +39,19 @@ export const saveSettingsAction = createServerFn({ method: "POST" })
     return apiPost("/api/settings", data);
   });
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/settings")({
   head: () => ({ meta: [{ title: "Settings — AMS Transports" }, { name: "description", content: "Company, theme, language and system preferences." }] }),
-  loader: async () => {
-    const settings = await getSettingsAction();
-    return { settings };
-  },
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ 
+      queryClient, 
+      queryKey: ["settings"], 
+      queryFn: async () => {
+        const settings = await getSettingsAction();
+        return { settings };
+      }
+    }),
   component: Settings,
 });
 

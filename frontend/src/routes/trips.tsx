@@ -55,9 +55,12 @@ export const deleteTripAction = createServerFn({ method: "POST" })
     return apiPost("/api/trips/delete", { id });
   });
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/trips")({
   head: () => ({ meta: [{ title: "Digital Trip Memos — AMS Transports" }, { name: "description", content: "Create, view and download digital transport memos, invoice summaries and operational stats." }] }),
-  loader: () => getTrips(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["trips"], queryFn: getTrips }),
   component: Trips,
 });
 

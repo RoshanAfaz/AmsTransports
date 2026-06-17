@@ -37,9 +37,12 @@ export const updateStatePricesAction = createServerFn({ method: "POST" })
 
 import { useLanguage } from "@/lib/language-context";
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/diesel")({
   head: () => ({ meta: [{ title: "Diesel & Fuel Intelligence — AMS Transports" }, { name: "description", content: "Intelligent fuel analytics, state prices tracker and mileage dashboard." }] }),
-  loader: () => getDieselData(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["diesel"], queryFn: getDieselData }),
   component: Diesel,
 });
 

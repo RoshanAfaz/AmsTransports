@@ -50,6 +50,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 import { useState, useEffect, Suspense } from "react";
 import { LoginPage } from "@/components/login-page";
 import { TruckLoader } from "@/components/truck-loader";
+import { apiGet } from "@/lib/api-fetch";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
@@ -68,6 +69,33 @@ function RootComponent() {
       clearTimeout(timer);
     };
   }, []);
+
+  // Prefetch data in the background to ensure all navigations are completely instant
+  useEffect(() => {
+    if (isMounted && isAuthenticated) {
+      const routesToPrefetch = [
+        { key: ["dashboard"], fn: () => apiGet("/api/dashboard") },
+        { key: ["drivers"], fn: () => apiGet("/api/drivers") },
+        { key: ["trips"], fn: () => apiGet("/api/trips").then(async (d: any) => {
+            const settings = await apiGet("/api/settings").catch(() => null);
+            return { ...d, settings };
+          }) 
+        },
+        { key: ["fleet"], fn: () => apiGet("/api/fleet") },
+        { key: ["maintenance"], fn: () => apiGet("/api/maintenance") },
+        { key: ["tyres"], fn: () => apiGet("/api/tyres") },
+        { key: ["expenses"], fn: () => apiGet("/api/expenses") },
+        { key: ["emi"], fn: () => apiGet("/api/emi") },
+        { key: ["diesel"], fn: () => apiGet("/api/diesel") },
+        { key: ["settings"], fn: () => apiGet("/api/settings").then(d => ({ settings: d })) },
+        { key: ["notifications"], fn: () => apiGet("/api/notifications") },
+      ];
+
+      routesToPrefetch.forEach(({ key, fn }) => {
+        queryClient.prefetchQuery({ queryKey: key, queryFn: fn }).catch(() => {});
+      });
+    }
+  }, [isMounted, isAuthenticated, queryClient]);
 
   if (!isMounted) {
     return (

@@ -12,6 +12,8 @@ import { formatINR } from "@/lib/mock-data";
 import { apiGet } from "@/lib/api-fetch";
 import { useLanguage } from "@/lib/language-context";
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const getDashboardData = createServerFn({ method: "GET" }).handler(async () => {
   return apiGet("/api/dashboard");
 });
@@ -23,7 +25,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Live fleet operations, trips, diesel, and profit analytics for AMS Transports." },
     ],
   }),
-  loader: () => getDashboardData(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["dashboard"], queryFn: getDashboardData }),
   component: Dashboard,
 });
 

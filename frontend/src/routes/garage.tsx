@@ -51,9 +51,12 @@ export const deleteGarageVehicleAction = createServerFn({ method: "POST" })
     return apiPost("/api/garage/delete", { id: _id });
   });
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/garage")({
   head: () => ({ meta: [{ title: "Garage — AMS Transports" }, { name: "description", content: "Compliance checks, fitness schedules and permit controls." }] }),
-  loader: () => getGarageDataAction(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["garage"], queryFn: getGarageDataAction }),
   component: Garage,
 });
 

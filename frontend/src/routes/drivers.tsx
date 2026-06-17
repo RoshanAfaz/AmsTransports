@@ -48,9 +48,12 @@ export const deleteDriverAction = createServerFn({ method: "POST" })
     return apiPost("/api/drivers/delete", { id: data._id });
   });
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/drivers")({
   head: () => ({ meta: [{ title: "Drivers — AMS Transports" }, { name: "description", content: "Manage drivers, salaries, performance and assignments." }] }),
-  loader: () => getDrivers(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["drivers"], queryFn: getDrivers }),
   component: Drivers,
 });
 

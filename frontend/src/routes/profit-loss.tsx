@@ -14,9 +14,12 @@ export const getPLData = createServerFn({ method: "GET" }).handler(async () => {
   return apiGet("/api/profit-loss");
 });
 
+import { swrLoader } from "@/lib/query-loader";
+
 export const Route = createFileRoute("/profit-loss")({
   head: () => ({ meta: [{ title: "Profit & Loss — AMS Transports" }, { name: "description", content: "Logically verified profitability analysis across the fleet." }] }),
-  loader: () => getPLData(),
+  loader: ({ context: { queryClient } }) => 
+    swrLoader({ queryClient, queryKey: ["profit-loss"], queryFn: getPLData }),
   component: PL,
 });
 
