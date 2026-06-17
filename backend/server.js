@@ -573,6 +573,8 @@ app.post('/api/trips', async (req, res) => {
       status: data.status || "Running",
       distance: Number(data.distance || 0),
       revenue: Number(data.revenue || 0),
+      outwardRevenue: Number(data.outwardRevenue || 0),
+      returnRevenue: Number(data.returnRevenue || 0),
       diesel: Number(data.diesel || 0),
       toll: Number(data.toll || 0),
       bata: Number(data.bata || 0),
@@ -599,6 +601,10 @@ app.post('/api/trips', async (req, res) => {
     if (trip.tripType === "Round") {
       trip.diesel = (trip.outwardDiesel || 0) + (trip.returnDiesel || 0);
       trip.litres = (trip.outwardLitres || 0) + (trip.returnLitres || 0);
+      trip.revenue = (trip.outwardRevenue || 0) + (trip.returnRevenue || 0);
+    } else {
+      trip.outwardRevenue = trip.revenue;
+      trip.returnRevenue = 0;
     }
 
     if (trip.status === "Completed") {
@@ -673,7 +679,21 @@ app.post('/api/trips/finish', async (req, res) => {
     parsedUpdate.litres = litres;
     parsedUpdate.dieselRate = Number(updateData.dieselRate || 0);
     
-    if (updateData.revenue !== undefined) parsedUpdate.revenue = Number(updateData.revenue || 0);
+    if (updateData.outwardRevenue !== undefined) parsedUpdate.outwardRevenue = Number(updateData.outwardRevenue || 0);
+    if (updateData.returnRevenue !== undefined) parsedUpdate.returnRevenue = Number(updateData.returnRevenue || 0);
+    
+    if (isRound) {
+      const outRev = parsedUpdate.outwardRevenue !== undefined ? parsedUpdate.outwardRevenue : Number(trip.outwardRevenue || 0);
+      const retRev = parsedUpdate.returnRevenue !== undefined ? parsedUpdate.returnRevenue : Number(trip.returnRevenue || 0);
+      parsedUpdate.revenue = outRev + retRev;
+    } else {
+      if (updateData.revenue !== undefined) {
+        parsedUpdate.revenue = Number(updateData.revenue || 0);
+        parsedUpdate.outwardRevenue = parsedUpdate.revenue;
+        parsedUpdate.returnRevenue = 0;
+      }
+    }
+
     if (updateData.toll !== undefined) parsedUpdate.toll = Number(updateData.toll || 0);
     if (updateData.bata !== undefined) parsedUpdate.bata = Number(updateData.bata || 0);
     if (updateData.misc !== undefined) parsedUpdate.misc = Number(updateData.misc || 0);

@@ -608,20 +608,45 @@ function Trips() {
             </div>
           )}
 
-          <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-1">
-              <Label htmlFor="revenue" className="text-xs">{t("Freight Amount (Revenue)")} (₹)</Label>
-              <Input id="revenue" name="revenue" type="number" placeholder="65000" className="bg-muted/40 h-9 font-bold text-xs text-primary" required />
+          {tripType === "Round" ? (
+            <>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label htmlFor="outwardRevenue" className="text-xs">{t("Outward Freight Amount")} (₹)</Label>
+                  <Input id="outwardRevenue" name="outwardRevenue" type="number" placeholder="40000" className="bg-muted/40 h-9 font-bold text-xs text-primary" required />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="returnRevenue" className="text-xs">{t("Return Freight Amount")} (₹)</Label>
+                  <Input id="returnRevenue" name="returnRevenue" type="number" placeholder="25000" className="bg-muted/40 h-9 font-bold text-xs text-primary" required />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <Label htmlFor="advance" className="text-xs">{t("Advance Received")} (₹)</Label>
+                  <Input id="advance" name="advance" type="number" placeholder="20000" className="bg-muted/40 h-9 font-bold text-xs" />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="toll" className="text-xs">{t("Toll Gate Charges")} (₹)</Label>
+                  <Input id="toll" name="toll" type="number" placeholder="2400" className="bg-muted/40 h-9" required />
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="revenue" className="text-xs">{t("Freight Amount (Revenue)")} (₹)</Label>
+                <Input id="revenue" name="revenue" type="number" placeholder="65000" className="bg-muted/40 h-9 font-bold text-xs text-primary" required />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="advance" className="text-xs">{t("Advance Received")} (₹)</Label>
+                <Input id="advance" name="advance" type="number" placeholder="20000" className="bg-muted/40 h-9 font-bold text-xs" />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="toll" className="text-xs">{t("Toll Gate Charges")} (₹)</Label>
+                <Input id="toll" name="toll" type="number" placeholder="2400" className="bg-muted/40 h-9" required />
+              </div>
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="advance" className="text-xs">{t("Advance Received")} (₹)</Label>
-              <Input id="advance" name="advance" type="number" placeholder="20000" className="bg-muted/40 h-9 font-bold text-xs" />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="toll" className="text-xs">{t("Toll Gate Charges")} (₹)</Label>
-              <Input id="toll" name="toll" type="number" placeholder="2400" className="bg-muted/40 h-9" required />
-            </div>
-          </div>
+          )}
           
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-1">
@@ -806,6 +831,9 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
   const [maintenance, setMaintenance] = useState(t.maintenance?.toString() || "0");
   const [advance, setAdvance] = useState(t.advance?.toString() || "0");
   const [customer, setCustomer] = useState(t.customer || "");
+  const [revenue, setRevenue] = useState(t.revenue?.toString() || "0");
+  const [outwardRevenue, setOutwardRevenue] = useState(t.outwardRevenue?.toString() || "0");
+  const [returnRevenue, setReturnRevenue] = useState(t.returnRevenue?.toString() || "0");
 
   useEffect(() => {
     setDieselRate(t.dieselRate?.toString() || defaultRate);
@@ -831,6 +859,9 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
     setMaintenance(t.maintenance?.toString() || "0");
     setAdvance(t.advance?.toString() || "0");
     setCustomer(t.customer || "");
+    setRevenue(t.revenue?.toString() || "0");
+    setOutwardRevenue(t.outwardRevenue?.toString() || "0");
+    setReturnRevenue(t.returnRevenue?.toString() || "0");
   }, [t, defaultRate]);
 
   const syncSingleLitres = (costStr: string, rateStr: string) => {
@@ -963,11 +994,14 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
         payload.returnDieselRate = Number(returnDieselRate);
         payload.returnSource = returnSource;
         payload.returnDestination = returnDestination;
+        payload.outwardRevenue = Number(outwardRevenue);
+        payload.returnRevenue = Number(returnRevenue);
       } else {
         payload.closingKm = Number(closingKm);
         payload.diesel = Number(diesel);
         payload.litres = Number(litres);
         payload.dieselRate = Number(dieselRate);
+        payload.revenue = Number(revenue);
       }
 
       payload.food = Number(food);
@@ -1061,8 +1095,16 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
     doc.line(15, 88, 195, 88);
     
     // Generate Rows
-    const rows = [
-      ["1. Freight Amount (Revenue)", formatPDFCurrency(t.revenue || 0)],
+    const rows = [];
+    if (t.tripType === "Round") {
+      rows.push(["1a. Outward Leg Freight Amount", formatPDFCurrency(t.outwardRevenue || 0)]);
+      rows.push(["1b. Return Leg Freight Amount", formatPDFCurrency(t.returnRevenue || 0)]);
+      rows.push(["1c. Total Freight (Revenue)", formatPDFCurrency(t.revenue || 0)]);
+    } else {
+      rows.push(["1. Freight Amount (Revenue)", formatPDFCurrency(t.revenue || 0)]);
+    }
+    
+    rows.push(
       ["2. Advance Received", formatPDFCurrency(t.advance || 0)],
       ["3. Fuel Expenses (Diesel)", formatPDFCurrency(fuelCost)],
       ["4. Toll Gate Charges", formatPDFCurrency(t.toll || 0)],
@@ -1073,8 +1115,9 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
       ["9. RTO Checkpost Fees", formatPDFCurrency(t.rto || 0)],
       ["10. Tyre Puncture Repair", formatPDFCurrency(t.puncture || 0)],
       ["11. Way-side Maintenance", formatPDFCurrency(t.maintenance || 0)],
-      ["12. Miscellaneous", formatPDFCurrency(t.misc || 0)],
-    ];
+      ["12. Miscellaneous", formatPDFCurrency(t.misc || 0)]
+    );
+
     if (t.customAmount > 0) {
       rows.push([`13. Custom Expense: ${t.customName || "Other"}`, formatPDFCurrency(t.customAmount)]);
     }
@@ -1298,10 +1341,14 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
               <div className="mt-2 space-y-2 border-l-2 border-accent/30 pl-2.5 py-1 animate-fade-in">
                 <div className="text-xs bg-muted/20 border border-border/40 rounded p-2">
                   <p className="font-bold text-[11px] text-accent">{translate("Outward")}: {t.source} → {t.destination}</p>
-                  <div className="grid grid-cols-3 gap-2 mt-1.5 text-[11px]">
+                  <div className="grid grid-cols-2 gap-2 mt-1.5 text-[11px]">
                     <div>
-                      <span className="text-muted-foreground">{translate("Odometer Status")?.replace(" Status", "") || "Odo"}:</span>
-                      <p className="font-mono font-semibold">{t.outwardOpeningKm}-{t.outwardClosingKm}</p>
+                      <span className="text-muted-foreground">{translate("Odo") || "Odo"}:</span>
+                      <p className="font-mono font-semibold">{t.outwardOpeningKm} - {t.outwardClosingKm} km</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">{translate("Freight")}:</span>
+                      <p className="font-bold text-accent">{formatINR(t.outwardRevenue || 0)}</p>
                     </div>
                     <div>
                       <span className="text-muted-foreground">{translate("Fuel/Cost")}:</span>
@@ -1316,13 +1363,16 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
                   </div>
                 </div>
 
-
                 <div className="text-xs bg-muted/20 border border-border/40 rounded p-2">
                   <p className="font-bold text-[11px] text-success-foreground">{translate("Return")}: {t.returnSource || "N/A"} → {t.returnDestination || "N/A"}</p>
-                  <div className="grid grid-cols-3 gap-2 mt-1.5 text-[11px]">
+                  <div className="grid grid-cols-2 gap-2 mt-1.5 text-[11px]">
                     <div>
-                      <span className="text-muted-foreground">{translate("Odometer Status")?.replace(" Status", "") || "Odo"}:</span>
-                      <p className="font-mono font-semibold">{t.returnOpeningKm}-{t.returnClosingKm}</p>
+                      <span className="text-muted-foreground">{translate("Odo") || "Odo"}:</span>
+                      <p className="font-mono font-semibold">{t.returnOpeningKm} - {t.returnClosingKm} km</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">{translate("Freight")}:</span>
+                      <p className="font-bold text-success-foreground">{formatINR(t.returnRevenue || 0)}</p>
                     </div>
                     <div>
                       <span className="text-muted-foreground">{translate("Fuel/Cost")}:</span>
@@ -1608,6 +1658,27 @@ function TripCard({ trip: t, router, settings }: { trip: any; router: any; setti
                   <div className="border-t border-border/40 my-2 pt-2 space-y-3">
                     <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{translate("Final Operational Statements (Adjustments)")}</h4>
                     
+                    {t.tripType === "Round" ? (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <Label htmlFor="finish-outwardRevenue" className="text-xs">{translate("Outward Freight Amount") + " (₹)"}</Label>
+                          <Input id="finish-outwardRevenue" type="number" value={outwardRevenue} onChange={(e) => setOutwardRevenue(e.target.value)} className="bg-muted/40 h-9 text-xs text-primary font-bold" />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="finish-returnRevenue" className="text-xs">{translate("Return Freight Amount") + " (₹)"}</Label>
+                          <Input id="finish-returnRevenue" type="number" value={returnRevenue} onChange={(e) => setReturnRevenue(e.target.value)} className="bg-muted/40 h-9 text-xs text-primary font-bold" />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <Label htmlFor="finish-revenue" className="text-xs">{translate("Freight Amount") + " (₹)"}</Label>
+                          <Input id="finish-revenue" type="number" value={revenue} onChange={(e) => setRevenue(e.target.value)} className="bg-muted/40 h-9 text-xs text-primary font-bold" />
+                        </div>
+                        <div></div>
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
                         <Label htmlFor="customer" className="text-xs">{translate("Customer Name")}</Label>
