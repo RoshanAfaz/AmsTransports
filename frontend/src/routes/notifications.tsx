@@ -31,7 +31,7 @@ function Notifications() {
     <div>
       <PageHeader title="Notification Center" subtitle="Stay ahead of every deadline" action={<></>} />
       <div className="space-y-3">
-        {notifications.map((n) => {
+        {notifications.map((n: any) => {
           const c = cfg[n.type as keyof typeof cfg];
           return (
             <Card key={n.id} className={`glass shadow-elegant p-4 animate-fade-in border ${c.bg}`}>
